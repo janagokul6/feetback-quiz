@@ -36,7 +36,8 @@ export async function POST(request) {
         await axios.post(`${process.env.NEXT_PUBLIC_APP_URL}/api/email/send`, {
           email: userEmail,
           userId: saveResult.id.toString(),
-          recommendations
+          answers: quizData.answers, 
+          result: recommendations
         });
       } catch (emailError) {
         console.error('Email sending failed:', emailError);
