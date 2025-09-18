@@ -9,7 +9,7 @@ export async function POST(request) {
   try {
     const { answers } = await request.json();
     const validation = validateAllAnswers(answers);
-    
+
     if (!validation.isValid) {
       return NextResponse.json({
         success: false,
@@ -30,19 +30,16 @@ export async function POST(request) {
         error: saveResult.error || 'Failed to save quiz response'
       }, { status: 500 });
     }
-
-    if (process.env.NODE_ENV === 'production') {
-      try {
-        await axios.post(`${process.env.NEXT_PUBLIC_APP_URL}/api/email/send`, {
-          email: userEmail,
-          userId: saveResult.id.toString(),
-          answers: quizData.answers, 
-          result: recommendations
-        });
-      } catch (emailError) {
-        console.error('Email sending failed:', emailError);
-        await updateEmailStatus(saveResult.id, false);
-      }
+    try {
+      await axios.post(`${process.env.NEXT_PUBLIC_APP_URL}/api/email/send`, {
+        email: userEmail,
+        userId: saveResult.id.toString(),
+        answers: quizData.answers,
+        result: recommendations
+      });
+    } catch (emailError) {
+      console.error('Email sending failed:', emailError);
+      await updateEmailStatus(saveResult.id, false);
     }
 
     return NextResponse.json({
