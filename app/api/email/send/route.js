@@ -12,7 +12,7 @@ export async function POST(request) {
       }, { status: 400 });
     }
 
-    // Format answers for email
+    //Format answers
     const answersText = answers.map(answer => 
       `${answer.question}: ${answer.answer}`
     ).join('\n');
